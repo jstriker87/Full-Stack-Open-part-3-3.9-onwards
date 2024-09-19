@@ -34,7 +34,6 @@ useEffect(() => {
       setPersons(response.data)
     })
   }, [])
-console.log(persons)
 
 
   const addPerson = (event) => {
