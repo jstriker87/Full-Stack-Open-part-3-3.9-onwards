@@ -14,9 +14,6 @@ const [filterName, setFilterName] = useState('')
 const [message, setMessage] = useState(null)
 const [errorMessage, setErrorMessage] = useState(null)
 
-
-
-
 const deletePerson = (id) => {
     const person = persons.filter(person => person.id === id)
     if (window.confirm(`Do you really want to delete ${person.name}?`)) {
