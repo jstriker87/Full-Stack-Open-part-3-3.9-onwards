@@ -1,11 +1,10 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
-app.use(express.static('dist'))
-//const cors = require('cors')
-//app.use(cors({ origin: 'http://localhost:5173' }));
+//app.use(express.static('dist'))
+const cors = require('cors')
+app.use(cors({ origin: 'http://localhost:5173' }));
 const morgan = require('morgan')
-
 
 morgan.token('body', req => {
   return JSON.stringify(req.body)
