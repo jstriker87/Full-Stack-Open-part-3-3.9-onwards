@@ -14,7 +14,7 @@ morgan.token('body', req => {
 app.use(morgan(':method :url :status :response-time ms :body'))
 const mongoose = require('mongoose')
 const url = process.env.MONGODB_URI;
-
+console.log(url)
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
@@ -22,33 +22,6 @@ const Note = require('./models/note')
 
 var currentDate = new Date(); 
 var currentDateString = currentDate.toString();
- // let notes = [
- //   {
- //     id: "1",
- //     content: "HTML is easy",
- //     important: false
- //   },
- //   {
- //     id: "2",
- //     content: "Browser can execute only JavaScript",
- //     important: false
- //   },
- //   {
- //     id: "3",
- //     content: "GET and POST are the most important methods of HTTP protocol",
- //     important: false
- //   },
- //   {
- //     id: "6",
- //     content: "sdsda\\dd",
- //     important: true
- //   },
- //   {
- //     id: "8",
- //     content: "fcsccccz\\c",
- //     important: true
- //   }
- // ]
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -76,7 +49,6 @@ app.delete('/api/notes/:id', (request, response) => {
        response.json(note)
   })
 })
-
 
 app.post('/api/notes', (request, response) => {
     const body = request.body

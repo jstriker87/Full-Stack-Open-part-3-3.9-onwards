@@ -11,76 +11,37 @@ morgan.token('body', req => {
 })
 
 app.use(morgan(':method :url :status :response-time ms :body'))
+const mongoose = require('mongoose')
+require('dotenv').config();
+const url = process.env.MONGODB_URI_PERSONS;
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+const Person = require('./models/person')
 
 var currentDate = new Date(); 
 var currentDateString = currentDate.toString();
-  let persons = [
-    {
-      id: "2",
-      name: "Joe",
-      number: "544302"
-    },
-    {
-      id: "3",
-      name: "Amy",
-      number: "544303"
-    },
-    {
-      id: "5",
-      name: "Tony",
-      number: "544305"
-    }
-  ]
-  let notes = [
-    {
-      id: "1",
-      content: "HTML is easy",
-      important: false
-    },
-    {
-      id: "2",
-      content: "Browser can execute only JavaScript",
-      important: false
-    },
-    {
-      id: "3",
-      content: "GET and POST are the most important methods of HTTP protocol",
-      important: false
-    },
-    {
-      id: "6",
-      content: "sdsda\\dd",
-      important: true
-    },
-    {
-      id: "8",
-      content: "fcsccccz\\c",
-      important: true
-    }
-  ]
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/info', (request, response) => {
-    response.send(`Phonebook has info for ${persons.length} notes </br> ${currentDateString}`); 
-})
+//app.get('/info', (request, response) => {
+//    response.send(`Phonebook has info for ${persons.length} notes </br> ${currentDateString}`); 
+//})
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
   id = request.params.id
-  const person = persons.find(person=>person.id ==id)
-  if (person) {
+  Person.findById(request.params.id).then(person=>{
     response.json(person)
-  } else{
-        response.status(404).end()
-  }
-
+  })
 })
+
 
 app.delete('/api/persons/:id', (request, response) => {
 
@@ -100,30 +61,28 @@ const generateID = () => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    if (!body) {
-        return response.status(400).json({ 
-            error: 'The name or number are missing' 
-        })
+    if (body.content === undefined) {
+        return response.status(400).json({ error: 'content missing' })
     }
 
-
-    const person = {
+    const person = new Person({
         id: generateID(),
         name: body.name,
         number:body.number,
-    }
+    })
 
-    const duplicate = persons.find(notecheck =>notecheck.name ==person.content)
-    if (duplicate) {
-        return response.status(400).json({ 
-            error: `The name ${person.name} already exists` 
-        })
-    }
+    //const duplicate = notes.find(notecheck =>notecheck.name ==note.content)
+    //if (duplicate) {
+    //    return response.status(400).json({ 
+    //        error: `The name ${note.name} already exists` 
+    //    })
+    //}
 
-    persons= persons.concat(person)
-    response.json(person)
-
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
+
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
