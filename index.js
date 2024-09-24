@@ -25,9 +25,13 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-//app.get('/info', (request, response) => {
-//    response.send(`Phonebook has info for ${persons.length} notes </br> ${currentDateString}`); 
-//})
+
+app.get('/info', (request, response) => {
+    Person.countDocuments({}).then(count => {
+        response.send(`Phonebook has info for ${count} notes </br> ${currentDateString}`); 
+    })
+})
+
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(notes => {
@@ -52,29 +56,42 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  console.log(body)
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id,person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    if (body === undefined) {
-        return response.status(400).json({ error: 'content missing' })
+    console.log(body)
+    if (!body.name || !body.number) {
+        return response.status(400).send({ error: 'malformatted information sent' });
     }
-
+     Person.find({name: body.name})
+    .then(result => {
+    if (result.length > 1) {
+        return response.status(400).send()
+     }})
+    .catch(error => next(error))
     const person = new Person({
         name: body.name,
         number:body.number,
     })
-
-    //const duplicate = notes.find(notecheck =>notecheck.name ==note.content)
-    //if (duplicate) {
-    //    return response.status(400).json({ 
-    //        error: `The name ${note.name} already exists` 
-    //    })
-    //}
-
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
+    person.save().then(savedperson => {
+        response.json(savedperson)
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {

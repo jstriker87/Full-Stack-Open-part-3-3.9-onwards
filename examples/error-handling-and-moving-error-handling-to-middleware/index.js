@@ -69,12 +69,6 @@ app.post('/api/notes', (request, response) => {
         important: body.important || false,
     })
 
-    //const duplicate = notes.find(notecheck =>notecheck.name ==note.content)
-    //if (duplicate) {
-    //    return response.status(400).json({ 
-    //        error: `The name ${note.name} already exists` 
-    //    })
-    //}
 
     note.save().then(savedNote => {
         response.json(savedNote)
