@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static('dist'))
 const cors = require('cors')
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5174' }));
 const morgan = require('morgan')
 
 morgan.token('body', req => {
@@ -44,29 +44,19 @@ app.get('/api/persons/:id', (request, response) => {
 
 
 app.delete('/api/persons/:id', (request, response) => {
-
     id = request.params.id
-    persons = persons.filter(person=>person.id != id)
-    response.status(204).end()
-
+    Person.findByIdAndDelete(id).then(person=> {
+        response.json(person)
+    })
 })
-
-const generateID = () => {
-    const maxId =persons.length > 0
-        ? Math.max(...persons.map(n => Number(n.id))) 
-        : 0
-    return String(maxId + 1)
-}
-
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    if (body.content === undefined) {
+    if (body === undefined) {
         return response.status(400).json({ error: 'content missing' })
     }
 
     const person = new Person({
-        id: generateID(),
         name: body.name,
         number:body.number,
     })
