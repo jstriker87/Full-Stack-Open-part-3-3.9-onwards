@@ -23,13 +23,13 @@ const Note = require('./models/note')
 var currentDate = new Date(); 
 var currentDateString = currentDate.toString();
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
 
-//app.get('/info', (request, response) => {
-//    response.send(`Phonebook has info for ${notes.length} notes </br> ${currentDateString}`); 
-//})
+
+app.get('/info', (request, response) => {
+    Note.countDocuments({}).then(count => {
+        response.send(`Phonebook has info for ${count} notes </br> ${currentDateString}`); 
+    })
+})
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -37,25 +37,25 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
     .then(note => {
       if (note) {
         response.json(note)
       } else {
-        response.status(404).end() 
+        response.status(404).end()
       }
     })
-    .catch(error => {
-      console.log(error)
-      response.status(400).send({ error: 'malformatted id' })
-    })
+    .catch(error => next(error))
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-    Note.findById(request.params.id).then(note => {
-       response.json(note)
+app.delete('/api/notes/:id', (request, response,next) => {
+
+    Note.findByIdAndDelete(request.params.id)
+    .then(note => {
+        response.status(204).end() 
   })
+    .catch(error => next(error))
 })
 
 app.post('/api/notes', (request, response) => {
@@ -79,6 +79,42 @@ app.post('/api/notes', (request, response) => {
     note.save().then(savedNote => {
         response.json(savedNote)
     })
+})
+
+app.put('/api/notes/:id', (request, response, next) => {
+  const body = request.body
+  const note = {
+    content: body.content,
+    important: body.important,
+  }
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then(updatedNote => {
+      response.json(updatedNote)
+    })
+    .catch(error => next(error))
+})
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    } 
+
+    next(error)
+}
+
+app.use(errorHandler)
+
+app.get('/', (request, response) => {
+    response.send('<h1>Hello World!</h1>')
 })
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
