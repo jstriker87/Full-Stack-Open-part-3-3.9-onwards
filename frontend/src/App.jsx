@@ -16,7 +16,7 @@ const [errorMessage, setErrorMessage] = useState(null)
 
 const deletePerson = (id) => {
     const person = persons.filter(person => person.id === id)
-    if (window.confirm(`Do you really want to delete ${person.name}?`)) {
+    if (window.confirm(`Do you really want to delete ${person[0].name}?`)) {
      personsService
     .deletePB(person)
     .then(response => {

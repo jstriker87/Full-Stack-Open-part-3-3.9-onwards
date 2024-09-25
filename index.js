@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-//app.use(express.json())
+app.use(express.json())
 //app.use(express.static('dist'))
 const cors = require('cors')
 app.use(cors({ origin: '*' }));
@@ -79,6 +79,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
     console.log(body)
+    //process.exit(0)
     if (!body.name || !body.number) {
         return response.status(400).send({ error: 'malformatted information sent' });
     }
