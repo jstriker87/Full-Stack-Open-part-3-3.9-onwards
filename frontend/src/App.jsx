@@ -60,7 +60,7 @@ useEffect(() => {
                 }, 5000)
               })
               .catch(error => {
-                 setErrorMessage(
+                setErrorMessage(
                     `Note '${personObject.name}' has already been deleted from the server`
                 )
                 setPersons(persons.filter(person => person.id !== changedPerson.id))
@@ -88,6 +88,12 @@ useEffect(() => {
           setMessage(null)
         }, 5000)
         })
+        .catch(error => {
+            console.log(error.response.data.error)
+            setErrorMessage(
+                    `Note '${error.response.data.error}'`
+            )
+    })
     }
 
   return (
