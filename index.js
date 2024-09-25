@@ -64,7 +64,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
-  //Person.findByIdAndUpdate(request.params.id,person, { new: true })
     Person.findByIdAndUpdate(
         request.params.id,person, 
         { new: true, runValidators: true, context: 'query' }
@@ -74,7 +73,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
-
 
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
@@ -103,7 +101,6 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-// handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
 
@@ -118,7 +115,6 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-// this has to be the last loaded middleware, also all the routes should be registered before this!
 app.use(errorHandler)
 const PORT = process.env.PORT || 3001
 
