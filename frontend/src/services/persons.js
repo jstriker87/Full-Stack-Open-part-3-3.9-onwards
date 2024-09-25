@@ -18,9 +18,9 @@ const update = (id, newObject) => {
   return axios.put(`${baseUrl}/${id}`, newObject)
 }
 
-export default { 
-  getAll: getAll, 
-  create: create, 
+export default {
+  getAll: getAll,
+  create: create,
   update: update,
   deletePB: deletePB,
 }

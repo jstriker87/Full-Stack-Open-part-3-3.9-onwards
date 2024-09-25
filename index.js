@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 //app.use(express.static('dist'))
 const cors = require('cors')
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*' }))
 const morgan = require('morgan')
 
 morgan.token('body', req => {
@@ -12,14 +12,14 @@ morgan.token('body', req => {
 
 app.use(morgan(':method :url :status :response-time ms :body'))
 const mongoose = require('mongoose')
-require('dotenv').config();
-const url = process.env.MONGODB_URI_PERSONS;
+require('dotenv').config()
+const url = process.env.MONGODB_URI_PERSONS
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 const Person = require('./models/person')
 
-var currentDate = new Date(); 
-var currentDateString = currentDate.toString();
+var currentDate=new Date()
+var currentDateString = currentDate.toString()
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -27,9 +27,9 @@ app.get('/', (request, response) => {
 
 
 app.get('/info', (request, response) => {
-    Person.countDocuments({}).then(count => {
-        response.send(`Phonebook has info for ${count} notes </br> ${currentDateString}`); 
-    })
+  Person.countDocuments({}).then(count => {
+    response.send(`Phonebook has info for ${count} notes </br> ${currentDateString}`)
+  })
 })
 
 
@@ -41,8 +41,8 @@ app.get('/api/persons', (request, response, next) => {
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-  id = request.params.id
-  Person.findById(request.params.id).then(person=>{
+  const id = request.params.id
+  Person.findById(id).then(person => {
     response.json(person)
   })
     .catch(error => next(error))
@@ -50,7 +50,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -64,10 +64,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
-    Person.findByIdAndUpdate(
-        request.params.id,person, 
-        { new: true, runValidators: true, context: 'query' }
-    )
+  Person.findByIdAndUpdate(
+    request.params.id,person,
+    { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -75,26 +75,26 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
-    console.log(body)
-    //process.exit(0)
-    if (!body.name || !body.number) {
-        return response.status(400).send({ error: 'malformatted information sent' });
-    }
-     Person.find({name: body.name})
+  const body = request.body
+  console.log(body)
+  //process.exit(0)
+  if (!body.name || !body.number) {
+    return response.status(400).send({ error: 'malformatted information sent' })
+  }
+  Person.find({ name: body.name })
     .then(result => {
-    if (result.length > 1) {
+      if (result.length > 1) {
         return response.status(400).send()
-     }})
+      }})
     .catch(error => next(error))
-    const person = new Person({
-        name: body.name,
-        number:body.number,
-    })
-    person.save().then(savedperson => {
-        response.json(savedperson)
-    })
-        .catch(error => next(error))
+  const person = new Person({
+    name: body.name,
+    number:body.number,
+  })
+  person.save().then(savedperson => {
+    response.json(savedperson)
+  })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {

@@ -1,0 +1,21 @@
+
+/home/james/Documents/Coding/Full-Stack-Open-part-3-3.9-onwards/examples/connecting-the-backend-to-a-database/frontend/src/services/notes.js
+  1:1  error  Parsing error: 'import' and 'export' may appear only with 'sourceType: module'
+
+/home/james/Documents/Coding/Full-Stack-Open-part-3-3.9-onwards/examples/connecting-the-backend-to-a-database/frontend/vite.config.js
+  1:1  error  Parsing error: 'import' and 'export' may appear only with 'sourceType: module'
+
+/home/james/Documents/Coding/Full-Stack-Open-part-3-3.9-onwards/examples/connecting-the-backend-to-a-database/index.js
+   80:3   error  'id' is not defined                  no-undef
+   81:43  error  Expected '===' and instead saw '=='  eqeqeq
+   81:45  error  'id' is not defined                  no-undef
+   92:3   error  'id' is not defined                  no-undef
+   93:40  error  Expected '!==' and instead saw '!='  eqeqeq
+   93:43  error  'id' is not defined                  no-undef
+  122:60  error  Expected '===' and instead saw '=='  eqeqeq
+
+/home/james/Documents/Coding/Full-Stack-Open-part-3-3.9-onwards/examples/connecting-the-backend-to-a-database/mongo.js
+  42:33  error  Expected '===' and instead saw '=='  eqeqeq
+
+✖ 10 problems (10 errors, 0 warnings)
+
